@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.sonupc.visitpreferencemanager.fragment.TextInputFragment">
+
+    <EditText
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="page title"
+        android:inputType="text" />
+    <EditText
+        android:id="@+id/et1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="1st Input Hint"
+        android:inputType="text" />
+    <EditText
+        android:id="@+id/et2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="2nd Input Hint"
+        android:inputType="text" />
+    <EditText
+        android:id="@+id/et3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="3rd Input Hint"
+        android:inputType="text" />
+    <EditText
+        android:id="@+id/et4"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="4th Input Hint"
+        android:inputType="text" />
+    <Button
+        android:id="@+id/submitBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="submit"/>
+
+</LinearLayout>
