@@ -22,7 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -39,6 +41,7 @@ public class InstituteSelector extends Fragment implements AdapterView.OnItemSel
     private List<String> spinnerData;
     private ArrayAdapter<String> dataAdapter;
 
+    private Map<String, String> email_uid_map;      // Stores the mapping between uid and emailid
     private OnInstituteSelectedListener mListener;
 
     private int count = -1;
@@ -65,15 +68,25 @@ public class InstituteSelector extends Fragment implements AdapterView.OnItemSel
 
         Log.d(TAG, "onCreate()");
         spinnerData = new ArrayList<>();
+        email_uid_map = new HashMap<>();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                for(DataSnapshot child : dataSnapshot.getChildren()){
-                    Log.d(TAG, "children " + child.getKey());
-                    spinnerData.add(child.getKey());
+                for(DataSnapshot institute : dataSnapshot.getChildren()){
+                    Log.d(TAG, "children " + institute.getKey());
+                    if(institute.child(getString(R.string.FIREBASE_EMAIL_KEY)) != null) {
+                        try {
+                            String email = institute.child(getString(R.string.FIREBASE_EMAIL_KEY)).getValue(String.class).toString();
+                            email_uid_map.put(email, institute.getKey());
+                            Log.d(TAG, email);
+                            spinnerData.add(email);
+                        }catch (Exception e){
+                            Log.e(TAG, "error occured while getting obtatining email of institute", e);
+                        }
+                    }
                 }
                 dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, spinnerData);
                 // Drop down layout style - list view with radio button
@@ -113,7 +126,7 @@ public class InstituteSelector extends Fragment implements AdapterView.OnItemSel
 
         if(count >= 1) {
             if (mListener != null) {
-                mListener.onInstituteSelected(item);
+                mListener.onInstituteSelected(email_uid_map.get(item));
             }
         }
         // Showing selected spinner item

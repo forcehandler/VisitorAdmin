@@ -19,7 +19,7 @@ public class ScreenSelector extends Fragment implements View.OnClickListener {
 
     private static final String TAG = InstituteSelector.class.getSimpleName();
 
-    private EditText textInputEt, surveyEt, cameraEt, thankYouEt, emailEt, workflowEt;
+    private EditText textInputEt, surveyEt, cameraEt, thankYouEt, workflowEt;
     private Button submitBtn;
 
     private OnScreenSelectorListener mListener;
@@ -46,7 +46,6 @@ public class ScreenSelector extends Fragment implements View.OnClickListener {
         surveyEt = view.findViewById(R.id.survey);
         cameraEt = view.findViewById(R.id.camera);
         thankYouEt = view.findViewById(R.id.thankyou);
-        emailEt = view.findViewById(R.id.email);
         workflowEt = view.findViewById(R.id.workflow);
         submitBtn = view.findViewById(R.id.submitBtn);
 
@@ -62,16 +61,15 @@ public class ScreenSelector extends Fragment implements View.OnClickListener {
         surveyNos = Integer.parseInt(surveyEt.getText().toString());
         cameraNos = Integer.parseInt(cameraEt.getText().toString());
 
-        email = emailEt.getText().toString();
         workflow = workflowEt.getText().toString();
         thankYou = thankYouEt.getText().toString();
 
         if (mListener != null) {
-            mListener.onScreensSelected(textNos, surveyNos, cameraNos, thankYou, email, workflow);
+            mListener.onScreensSelected(textNos, surveyNos, cameraNos, thankYou, workflow);
         }
     }
 
     public interface OnScreenSelectorListener{
-        void onScreensSelected(int text, int survey, int camera, String thankYou, String email, String workflow_name);
+        void onScreensSelected(int text, int survey, int camera, String thankYou, String workflow_name);
     }
 }

@@ -33,12 +33,7 @@
         android:layout_height="wrap_content"
         android:hint="thank you text"
         android:inputType="text" />
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="email"
-        android:inputType="text" />
+
     <EditText
         android:id="@+id/workflow"
         android:layout_width="fill_parent"

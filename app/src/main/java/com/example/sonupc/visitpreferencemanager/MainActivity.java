@@ -109,41 +109,9 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
 
                 PreferencesModel preferencesModel = new PreferencesModel();
                 preferencesModel.setSignup_time(System.currentTimeMillis());
-                preferencesModel.setStage1(true);
-                preferencesModel.setStage2(true);
-                preferencesModel.setStage3(false);
-                preferencesModel.setStage4(false);
-                preferencesModel.setStage5(false);
-                preferencesModel.setInstituteEmail(email);
 
                 workflow_order.add(mThankYouPreference);
                 preferencesModel.setOrder_of_screens(workflow_order);
-
-                MasterWorkflow masterWorkflow = new MasterWorkflow();
-
-                /*LinkedHashMap<String, PreferencesModel> workflows_map = new LinkedHashMap<String, PreferencesModel>();
-                workflows_map.put("Test_workflow", preferencesModel);
-
-                masterWorkflow.setWorkflows_map(workflows_map);*/
-
-                /*mDatabase.child(instituteId)
-                        .setValue(masterWorkflow)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "Successfully registered masterworkflow on realtime database");
-                                fragmentManager.beginTransaction()
-                                        .replace(R.id.container_fragment, new SuccessFragment())
-                                        .commit();
-                            }
-
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e(TAG, "failed to add master workflow object", e);
-                            }
-                        });*/
 
                 mDatabase.child(instituteId).child("workflows_map").child(workflowName)
                         .setValue(preferencesModel)
@@ -177,14 +145,11 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
     }
 
     @Override
-    public void onScreensSelected(int text, int survey, int camera, String thankYou, String email1, String workflow_name) {
+    public void onScreensSelected(int text, int survey, int camera, String thankYou, String workflow_name) {
         stateCountList.add(text);
         stateCountList.add(survey);
         stateCountList.add(camera);
 
-        // TODO: ADD thankYou
-
-        email = email1;
         workflowName = workflow_name;
         mThankYouPreference = new ThankYouPreference();
         mThankYouPreference.setThank_you_text(thankYou);
@@ -246,7 +211,5 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
             driver();
         }
     }
-
-
 
 }
