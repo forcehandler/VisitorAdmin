@@ -14,13 +14,26 @@ public class PreferencesModel {
     // Map of order of screens and the Preference of the screen
     private ArrayList<Preference> order_of_screens;
 
+    private boolean workflowForSignOut;
+
     public PreferencesModel() {
     }
 
-    public PreferencesModel(long signup_time, ArrayList<Preference> order_of_screens) {
+    public boolean isWorkflowForSignOut() {
+        return workflowForSignOut;
+    }
+
+    public void setWorkflowForSignOut(boolean workflowForSignOut) {
+        this.workflowForSignOut = workflowForSignOut;
+    }
+
+    public PreferencesModel(long signup_time, ArrayList<Preference> order_of_screens, boolean workflowForSignOut) {
         this.signup_time = signup_time;
 
         this.order_of_screens = order_of_screens;
+
+        this.workflowForSignOut = workflowForSignOut;
+
     }
 
     public long getSignup_time() {

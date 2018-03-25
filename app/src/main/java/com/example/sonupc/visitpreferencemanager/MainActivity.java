@@ -37,12 +37,13 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
 
     private DatabaseReference mDatabase;
 
-    private static int state = 0;
-    private static int statecount = -1;
+    private int state = 0;
+    private int statecount = -1;
 
     private String instituteId;
     private String email;
     private String workflowName;
+    private boolean isWfSignOut;
 
     private FragmentManager fragmentManager;
     private List<Integer> stateCountList;
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
 
                 workflow_order.add(mThankYouPreference);
                 preferencesModel.setOrder_of_screens(workflow_order);
+                preferencesModel.setWorkflowForSignOut(isWfSignOut);
 
                 mDatabase.child(instituteId).child("workflows_map").child(workflowName)
                         .setValue(preferencesModel)
@@ -145,16 +147,23 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
     }
 
     @Override
-    public void onScreensSelected(int text, int survey, int camera, String thankYou, String workflow_name) {
+    public void onScreensSelected(int text, int survey, int camera, String thankYou, String workflow_name, boolean isWfSignOut) {
         stateCountList.add(text);
         stateCountList.add(survey);
         stateCountList.add(camera);
+
+        this.isWfSignOut = isWfSignOut;
 
         workflowName = workflow_name;
         mThankYouPreference = new ThankYouPreference();
         mThankYouPreference.setThank_you_text(thankYou);
 
         updateState();
+    }
+
+    @Override
+    public String getInstituteId() {
+        return instituteId;
     }
 
     @Override

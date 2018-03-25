@@ -5,4 +5,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="spinner_title">Select id</string>
     <string name="FIREBASE_EMAIL_KEY">instituteEmail</string>
+    <string name="storage_logo_ref">Logo</string>
+    <string name="intent_key_instituteId">instituteId</string>
+    <string name="brand_logo_filename">/brand_logo</string>
 </resources>
