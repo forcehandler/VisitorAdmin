@@ -66,13 +66,13 @@ public class InstituteSelector extends Fragment implements AdapterView.OnItemSel
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
 
-                    Log.d(TAG, "onCreate()");
-            spinnerData = new ArrayList<>();
-            email_uid_map = new HashMap<>();
+        Log.d(TAG, "onCreate()");
+        spinnerData = new ArrayList<>();
+        email_uid_map = new HashMap<>();
 
-            mDatabase = FirebaseDatabase.getInstance().getReference();
-            ValueEventListener postListener = new ValueEventListener() {
-                @Override
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 spinnerData.add("Select Email");

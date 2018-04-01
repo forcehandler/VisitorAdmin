@@ -6,6 +6,7 @@ package com.example.sonupc.visitpreferencemanager;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.util.Log;
+        import android.widget.Toast;
 
         import com.example.sonupc.visitpreferencemanager.fragment.CameraFragment;
         import com.example.sonupc.visitpreferencemanager.fragment.InstituteSelector;
@@ -43,10 +44,12 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
     private String instituteId;
     private String email;
     private String workflowName;
-    private boolean isWfSignOut;
+    private boolean isWfSignOut, isWfSms;
+    private String signOutField, smsField;
+
 
     private FragmentManager fragmentManager;
-    private List<Integer> stateCountList;
+    private List<Integer> stateCountList;       // stores no. of screens of each type
 
     ArrayList<Preference> workflow_order;
 
@@ -107,13 +110,17 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
 
             case 3:
                 Log.d(TAG, "state 3, uploading....");
-
+                Toast.makeText(this, "Uploading...", Toast.LENGTH_SHORT).show();
                 PreferencesModel preferencesModel = new PreferencesModel();
                 preferencesModel.setSignup_time(System.currentTimeMillis());
 
                 workflow_order.add(mThankYouPreference);
                 preferencesModel.setOrder_of_screens(workflow_order);
+
                 preferencesModel.setWorkflowForSignOut(isWfSignOut);
+                preferencesModel.setWorkflowForSms(isWfSms);
+                preferencesModel.setSignOutField(signOutField);
+                preferencesModel.setSmsField(smsField);
 
                 mDatabase.child(instituteId).child("workflows_map").child(workflowName)
                         .setValue(preferencesModel)
@@ -147,12 +154,10 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
     }
 
     @Override
-    public void onScreensSelected(int text, int survey, int camera, String thankYou, String workflow_name, boolean isWfSignOut) {
+    public void onScreensSelected(int text, int survey, int camera, String thankYou, String workflow_name) {
         stateCountList.add(text);
         stateCountList.add(survey);
         stateCountList.add(camera);
-
-        this.isWfSignOut = isWfSignOut;
 
         workflowName = workflow_name;
         mThankYouPreference = new ThankYouPreference();
@@ -170,6 +175,22 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
     public void onTextPreferenceListener(TextInputPreferenceModel textInputPreferenceModel) {
         Log.d(TAG, textInputPreferenceModel.getPage_title());
         workflow_order.add(textInputPreferenceModel);
+        updateState();
+    }
+
+    @Override
+    public void onTextPreferenceListener(TextInputPreferenceModel textInputPreferenceModel, boolean workflowForSignOut, String signOutField, boolean workflowForSms, String smsField) {
+        Log.d(TAG, textInputPreferenceModel.getPage_title() + " signOutField: " + signOutField + ", smsField: " + smsField);
+        workflow_order.add(textInputPreferenceModel);
+
+        if(workflowForSignOut){
+            isWfSignOut = true;
+            this.signOutField = signOutField;
+        }
+        if(workflowForSms){
+            isWfSms = true;
+            this.smsField = smsField;
+        }
         updateState();
     }
 

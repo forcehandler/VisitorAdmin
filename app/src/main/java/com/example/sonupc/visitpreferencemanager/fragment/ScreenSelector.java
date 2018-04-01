@@ -15,9 +15,6 @@ import android.widget.RadioButton;
 import com.example.sonupc.visitpreferencemanager.ImagePicker;
 import com.example.sonupc.visitpreferencemanager.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ScreenSelector extends Fragment implements View.OnClickListener {
 
     private static final String TAG = InstituteSelector.class.getSimpleName();
@@ -81,7 +78,7 @@ public class ScreenSelector extends Fragment implements View.OnClickListener {
                 thankYou = thankYouEt.getText().toString();
 
                 if (mListener != null) {
-                    mListener.onScreensSelected(textNos, surveyNos, cameraNos, thankYou, workflow, isWfSignOut);
+                    mListener.onScreensSelected(textNos, surveyNos, cameraNos, thankYou, workflow);
                 }
                 break;
         }
@@ -89,7 +86,7 @@ public class ScreenSelector extends Fragment implements View.OnClickListener {
     }
 
     public interface OnScreenSelectorListener{
-        void onScreensSelected(int text, int survey, int camera, String thankYou, String workflow_name, boolean isWfSignOut);
+        void onScreensSelected(int text, int survey, int camera, String thankYou, String workflow_name);
         String getInstituteId();
     }
 }

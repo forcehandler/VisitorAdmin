@@ -16,6 +16,11 @@ public class PreferencesModel {
 
     private boolean workflowForSignOut;
 
+    private boolean workflowForSms;
+
+    private String signOutField;
+    private String smsField;
+
     public PreferencesModel() {
     }
 
@@ -27,12 +32,15 @@ public class PreferencesModel {
         this.workflowForSignOut = workflowForSignOut;
     }
 
-    public PreferencesModel(long signup_time, ArrayList<Preference> order_of_screens, boolean workflowForSignOut) {
+    public PreferencesModel(long signup_time, ArrayList<Preference> order_of_screens, boolean workflowForSignOut, boolean workflowForSms, String signOutField, String smsField) {
         this.signup_time = signup_time;
 
         this.order_of_screens = order_of_screens;
 
         this.workflowForSignOut = workflowForSignOut;
+        this.workflowForSms = workflowForSms;
+        this.signOutField = signOutField;
+        this.smsField = smsField;
 
     }
 
@@ -50,5 +58,29 @@ public class PreferencesModel {
 
     public void setOrder_of_screens(ArrayList<Preference> order_of_screens) {
         this.order_of_screens = order_of_screens;
+    }
+
+    public boolean isWorkflowForSms() {
+        return workflowForSms;
+    }
+
+    public void setWorkflowForSms(boolean workflowForSms) {
+        this.workflowForSms = workflowForSms;
+    }
+
+    public String getSignOutField() {
+        return signOutField;
+    }
+
+    public void setSignOutField(String signOutField) {
+        this.signOutField = signOutField;
+    }
+
+    public String getSmsField() {
+        return smsField;
+    }
+
+    public void setSmsField(String smsField) {
+        this.smsField = smsField;
     }
 }

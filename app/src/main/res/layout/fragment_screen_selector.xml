@@ -40,17 +40,17 @@
         android:layout_height="wrap_content"
         android:hint="Work flow Name"
         android:inputType="text" />
-    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    <RadioGroup
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <RadioButton
-        android:id="@+id/rbtn_signout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Sign Out Workflow"
-        android:visibility="visible" />
+        <RadioButton
+            android:id="@+id/rbtn_signout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign Out Workflow"
+            android:visibility="gone" />
     </RadioGroup>
 
     <Button
