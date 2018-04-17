@@ -21,14 +21,21 @@ package com.example.sonupc.visitpreferencemanager;
         import com.example.sonupc.visitpreferencemanager.preference.SurveyPreferenceModel;
         import com.example.sonupc.visitpreferencemanager.preference.TextInputPreferenceModel;
         import com.example.sonupc.visitpreferencemanager.preference.ThankYouPreference;
+        import com.google.android.gms.tasks.OnCompleteListener;
         import com.google.android.gms.tasks.OnFailureListener;
         import com.google.android.gms.tasks.OnSuccessListener;
+        import com.google.android.gms.tasks.Task;
+        import com.google.firebase.auth.FirebaseAuth;
         import com.google.firebase.database.DatabaseReference;
         import com.google.firebase.database.FirebaseDatabase;
+        import com.google.firebase.firestore.CollectionReference;
+        import com.google.firebase.firestore.FirebaseFirestore;
 
         import java.util.ArrayList;
+        import java.util.HashMap;
         import java.util.LinkedHashMap;
         import java.util.List;
+        import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements InstituteSelector.OnInstituteSelectedListener,
         ScreenSelector.OnScreenSelectorListener, TextInputFragment.OnTextPreferenceListener,
@@ -53,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
 
     ArrayList<Preference> workflow_order;
 
+    private List<String> questionsList;
+
     private ThankYouPreference mThankYouPreference;
 
     @Override
@@ -65,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
 
         stateCountList = new ArrayList<>();
         workflow_order = new ArrayList<>();
+        questionsList = new ArrayList<>();
 
         fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentById(R.id.container_fragment);
@@ -131,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
                                 fragmentManager.beginTransaction()
                                         .replace(R.id.container_fragment, new SuccessFragment())
                                         .commit();
+                                setFieldsInWorkflowDoc();
                             }
 
                         })
@@ -174,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
     @Override
     public void onTextPreferenceListener(TextInputPreferenceModel textInputPreferenceModel) {
         Log.d(TAG, textInputPreferenceModel.getPage_title());
+        questionsList.addAll(textInputPreferenceModel.getHints());
         workflow_order.add(textInputPreferenceModel);
         updateState();
     }
@@ -183,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
         Log.d(TAG, textInputPreferenceModel.getPage_title() + " signOutField: " + signOutField + ", smsField: " + smsField);
         workflow_order.add(textInputPreferenceModel);
 
+        questionsList.addAll(textInputPreferenceModel.getHints());  // Add all the questions to set the fields in workflow doc
         if(workflowForSignOut){
             isWfSignOut = true;
             this.signOutField = signOutField;
@@ -198,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
     public void onSurveyPreferenceSubmit(SurveyPreferenceModel surveyPreferenceModel) {
         Log.d(TAG, surveyPreferenceModel.getSurvey_title());
         workflow_order.add(surveyPreferenceModel);
+        questionsList.addAll(surveyPreferenceModel.getSurvey_item_name());
         updateState();
     }
 
@@ -206,6 +220,51 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
         Log.d(TAG, cameraPreference.getCamera_hint_text());
         workflow_order.add(cameraPreference);
         updateState();
+    }
+
+    private void setFieldsInWorkflowDoc(){
+        CollectionReference workflowCollectionRef;
+        workflowCollectionRef = FirebaseFirestore.getInstance().collection(getString(R.string.collection_ref_institutes))
+                .document(instituteId).collection(getString(R.string.collection_ref_workflows));
+
+        // TODO : No need to upload signOut field for doc, will fetch the workflow status from realtime database.
+        // Add a field to identify the SignOut enabled workflow in the firestore
+
+        if(isWfSignOut){
+            questionsList.add(getString(R.string.KEY_WORKFLOW_PREF_SIGNIN_TIME));
+            questionsList.add(getString(R.string.KEY_WORKFLOW_PREF_IS_SIGNEDOUT));
+            questionsList.add(getString(R.string.KEY_WORKFLOW_PREF_SIGNOUT_TIME));
+        }
+
+        Map<String, Boolean> map = new HashMap<>();
+        map.put(getString(R.string.KEY_WORKFLOW_DATA_IS_WORKFLOW_SIGNOUT), isWfSignOut);
+        workflowCollectionRef.document(workflowName).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "set signOutField for" + workflowName + " workflow");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "FAILED to set signOutField for" + workflowName + " workflow");
+            }
+        });
+
+        Map<String, Object> quesMap = new HashMap<>();
+        quesMap.put("questions", questionsList);
+
+        workflowCollectionRef.document(workflowName).update(quesMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "uploaded the list of questions in " + workflowName + " workflow");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "Failed to upload questions list to the workflow");
+            }
+        });
+
     }
 
     private void updateState(){
