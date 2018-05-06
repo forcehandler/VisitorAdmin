@@ -28,6 +28,19 @@
         android:inputType="number" />
 
     <EditText
+        android:id="@+id/ratings"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="#rating questions"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/suggestions"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="#suggestions"
+        android:inputType="number" />
+    <EditText
         android:id="@+id/thankyou"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

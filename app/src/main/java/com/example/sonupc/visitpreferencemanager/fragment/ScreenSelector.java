@@ -19,7 +19,7 @@ public class ScreenSelector extends Fragment implements View.OnClickListener {
 
     private static final String TAG = InstituteSelector.class.getSimpleName();
 
-    private EditText textInputEt, surveyEt, cameraEt, thankYouEt, workflowEt;
+    private EditText textInputEt, surveyEt, cameraEt, ratingsEt, suggestionEt, thankYouEt, workflowEt;
     private Button submitBtn, uploadLogoBtn;
     private RadioButton signOutRadioBtn;
 
@@ -46,6 +46,8 @@ public class ScreenSelector extends Fragment implements View.OnClickListener {
         textInputEt = view.findViewById(R.id.textinput);
         surveyEt = view.findViewById(R.id.survey);
         cameraEt = view.findViewById(R.id.camera);
+        ratingsEt = view.findViewById(R.id.ratings);
+        suggestionEt = view.findViewById(R.id.suggestions);
         thankYouEt = view.findViewById(R.id.thankyou);
         workflowEt = view.findViewById(R.id.workflow);
         submitBtn = view.findViewById(R.id.submitBtn);
@@ -67,18 +69,19 @@ public class ScreenSelector extends Fragment implements View.OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.submitBtn:
-                int textNos, surveyNos, cameraNos;
+                int textNos, surveyNos, cameraNos, ratingNos, suggestionNos;
                 String thankYou, email, workflow;
                 boolean isWfSignOut = signOutRadioBtn.isChecked();
                 textNos = Integer.parseInt(textInputEt.getText().toString());
                 surveyNos = Integer.parseInt(surveyEt.getText().toString());
                 cameraNos = Integer.parseInt(cameraEt.getText().toString());
-
+                ratingNos = Integer.parseInt(ratingsEt.getText().toString());
+                suggestionNos = Integer.parseInt(suggestionEt.getText().toString());
                 workflow = workflowEt.getText().toString();
                 thankYou = thankYouEt.getText().toString();
 
                 if (mListener != null) {
-                    mListener.onScreensSelected(textNos, surveyNos, cameraNos, thankYou, workflow);
+                    mListener.onScreensSelected(textNos, surveyNos, cameraNos, ratingNos, suggestionNos, thankYou, workflow);
                 }
                 break;
         }
@@ -86,7 +89,7 @@ public class ScreenSelector extends Fragment implements View.OnClickListener {
     }
 
     public interface OnScreenSelectorListener{
-        void onScreensSelected(int text, int survey, int camera, String thankYou, String workflow_name);
+        void onScreensSelected(int text, int survey, int camera, int ratings, int suggestions, String thankYou, String workflow_name);
         String getInstituteId();
     }
 }

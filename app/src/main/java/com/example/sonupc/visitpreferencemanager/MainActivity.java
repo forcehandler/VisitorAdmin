@@ -10,14 +10,18 @@ package com.example.sonupc.visitpreferencemanager;
 
         import com.example.sonupc.visitpreferencemanager.fragment.CameraFragment;
         import com.example.sonupc.visitpreferencemanager.fragment.InstituteSelector;
+        import com.example.sonupc.visitpreferencemanager.fragment.RatingFragment;
         import com.example.sonupc.visitpreferencemanager.fragment.ScreenSelector;
         import com.example.sonupc.visitpreferencemanager.fragment.SuccessFragment;
+        import com.example.sonupc.visitpreferencemanager.fragment.SuggestionFragment;
         import com.example.sonupc.visitpreferencemanager.fragment.SurveyFragment;
         import com.example.sonupc.visitpreferencemanager.fragment.TextInputFragment;
         import com.example.sonupc.visitpreferencemanager.preference.CameraPreference;
         import com.example.sonupc.visitpreferencemanager.preference.MasterWorkflow;
         import com.example.sonupc.visitpreferencemanager.preference.Preference;
         import com.example.sonupc.visitpreferencemanager.preference.PreferencesModel;
+        import com.example.sonupc.visitpreferencemanager.preference.RatingPreferenceModel;
+        import com.example.sonupc.visitpreferencemanager.preference.SuggestionPreference;
         import com.example.sonupc.visitpreferencemanager.preference.SurveyPreferenceModel;
         import com.example.sonupc.visitpreferencemanager.preference.TextInputPreferenceModel;
         import com.example.sonupc.visitpreferencemanager.preference.ThankYouPreference;
@@ -39,7 +43,8 @@ package com.example.sonupc.visitpreferencemanager;
 
 public class MainActivity extends AppCompatActivity implements InstituteSelector.OnInstituteSelectedListener,
         ScreenSelector.OnScreenSelectorListener, TextInputFragment.OnTextPreferenceListener,
-        SurveyFragment.OnSurveyPreferenceListener, CameraFragment.CameraFragmentInteraction{
+        SurveyFragment.OnSurveyPreferenceListener, CameraFragment.CameraFragmentInteraction,
+        RatingFragment.RatingFragmentListener, SuggestionFragment.SuggestionFragmentListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -119,7 +124,27 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
                 break;
 
             case 3:
-                Log.d(TAG, "state 3, uploading....");
+                Log.d(TAG, "state 3, statecount = " + statecount);
+                if(statecount < stateCountList.get(state)){
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container_fragment, new RatingFragment())
+                            .commit();
+                }
+                break;
+
+            case 4:
+                Log.d(TAG, "state 4, statecount = " + statecount);
+                if(statecount < stateCountList.get(state)){
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container_fragment, new SuggestionFragment())
+                            .commit();
+                }
+                break;
+
+            case 5:
+                Log.d(TAG, "state 4, uploading....");
                 Toast.makeText(this, "Uploading...", Toast.LENGTH_SHORT).show();
                 PreferencesModel preferencesModel = new PreferencesModel();
                 preferencesModel.setSignup_time(System.currentTimeMillis());
@@ -165,10 +190,13 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
     }
 
     @Override
-    public void onScreensSelected(int text, int survey, int camera, String thankYou, String workflow_name) {
+    public void onScreensSelected(int text, int survey, int camera, int ratings, int suggestions, String thankYou, String workflow_name) {
         stateCountList.add(text);
         stateCountList.add(survey);
         stateCountList.add(camera);
+
+        stateCountList.add(ratings);
+        stateCountList.add(suggestions);
 
         workflowName = workflow_name;
         mThankYouPreference = new ThankYouPreference();
@@ -219,6 +247,22 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
     public void onCameraFragmentInteraction(CameraPreference cameraPreference) {
         Log.d(TAG, cameraPreference.getCamera_hint_text());
         workflow_order.add(cameraPreference);
+        updateState();
+    }
+
+    @Override
+    public void onRatingQuestionsSubmit(RatingPreferenceModel ratingPreferenceModel) {
+        Log.d(TAG, "Got rating preference model");
+        workflow_order.add(ratingPreferenceModel);
+        questionsList.addAll(ratingPreferenceModel.getQuestions());
+        updateState();
+    }
+
+    @Override
+    public void onSuggestionQuestionSubmit(SuggestionPreference suggestionPreference) {
+        Log.d(TAG, "Got rating preference model");
+        workflow_order.add(suggestionPreference);
+        questionsList.add(suggestionPreference.getSuggestion_text());
         updateState();
     }
 
@@ -300,5 +344,7 @@ public class MainActivity extends AppCompatActivity implements InstituteSelector
             driver();
         }
     }
+
+
 
 }
